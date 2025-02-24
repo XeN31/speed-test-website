@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Gerçek İnternet Hız Testi</title>
+  <link rel="stylesheet" href="style.css">
+  <!-- Chart.js kütüphanesi -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+  <header>
+    <button id="modeToggle" class="mode-toggle">Dark/Light Mode</button>
+  </header>
+  <main>
+    <!-- Ana Sayfa -->
+    <section id="homeSection" class="screen active">
+      <div class="welcome">
+        <h1>İnternet Hızınızı Test Edin!</h1>
+        <p>Hızlı, modern ve kullanıcı dostu internet hız testi uygulaması.</p>
+      </div>
+      <button id="startButton" class="start-button">Testi Başlat</button>
+    </section>
+
+    <!-- Test Ekranı -->
+    <section id="testSection" class="screen">
+      <h2>Test Devam Ediyor...</h2>
+      <div class="metrics-container">
+        <div class="metric-box">
+          <h3>İndirme Hızı</h3>
+          <div class="progress-bar"><div id="downloadBar" class="progress"></div></div>
+          <p><span id="downloadSpeed">-</span> Mbps</p>
+        </div>
+        <div class="metric-box">
+          <h3>Yükleme Hızı</h3>
+          <div class="progress-bar"><div id="uploadBar" class="progress"></div></div>
+          <p><span id="uploadSpeed">-</span> Mbps</p>
+        </div>
+        <div class="metric-box">
+          <h3>Ping</h3>
+          <p><span id="pingValue">-</span> ms</p>
+        </div>
+        <div class="metric-box">
+          <h3>Jitter</h3>
+          <p><span id="jitterValue">-</span> ms</p>
+        </div>
+        <div class="metric-box">
+          <h3>Paket Kaybı</h3>
+          <p><span id="packetLossValue">-</span>%</p>
+        </div>
+      </div>
+      <canvas id="speedChart"></canvas>
+    </section>
+
+    <!-- Sonuç Sayfası -->
+    <section id="resultSection" class="screen">
+      <h2>Test Sonuçları</h2>
+      <div class="results-container">
+        <div class="result-item">
+          <h3>İndirme Hızı</h3>
+          <p id="finalDownload">- Mbps</p>
+        </div>
+        <div class="result-item">
+          <h3>Yükleme Hızı</h3>
+          <p id="finalUpload">- Mbps</p>
+        </div>
+        <div class="result-item">
+          <h3>Ping</h3>
+          <p id="finalPing">- ms</p>
+        </div>
+        <div class="result-item">
+          <h3>Jitter</h3>
+          <p id="finalJitter">- ms</p>
+        </div>
+        <div class="result-item">
+          <h3>Paket Kaybı</h3>
+          <p id="finalPacketLoss">- %</p>
+        </div>
+      </div>
+      <div class="recommendation" id="recommendationText"></div>
+      <div class="social-share">
+        <h3>Sonuçları Paylaş</h3>
+        <button class="share-btn" data-platform="facebook">Facebook</button>
+        <button class="share-btn" data-platform="twitter">Twitter</button>
+        <button class="share-btn" data-platform="linkedin">LinkedIn</button>
+        <button class="share-btn" data-platform="whatsapp">WhatsApp</button>
+      </div>
+      <div class="history-section">
+        <h3>Test Geçmişi</h3>
+        <ul id="historyList"></ul>
+      </div>
+      <button id="restartButton" class="restart-button">Yeni Test</button>
+    </section>
+  </main>
+  <script src="script.js"></script>
+</body>
+</html>
