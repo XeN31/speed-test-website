@@ -27,7 +27,6 @@ document.addEventListener("DOMContentLoaded", () => {
   const shareButtons = document.querySelectorAll(".share-btn");
 
   let speedChart;
-
   let results = {
     download: 0,
     upload: 0,
@@ -41,7 +40,7 @@ document.addEventListener("DOMContentLoaded", () => {
     document.body.classList.toggle("dark-mode");
   });
 
-  // Start testi başlat
+  // Testi başlat
   startButton.addEventListener("click", () => {
     showSection(testSection);
     runSpeedTest();
@@ -96,14 +95,14 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   }
 
-  // Testi sırasıyla çalıştır: İndirme -> Yükleme -> Ping
+  // Test akışını sırasıyla çalıştır: İndirme -> Yükleme -> Ping
   async function runSpeedTest() {
     try {
       results.download = await testDownloadSpeed();
       updateDownloadUI(results.download);
       results.upload = await testUploadSpeed();
       updateUploadUI(results.upload);
-      let pingResults = await testPing();
+      const pingResults = await testPing();
       results.ping = pingResults.avg;
       results.jitter = pingResults.jitter;
       results.packetLoss = pingResults.packetLoss;
@@ -117,36 +116,34 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   }
 
-  // İndirme Hızı Testi (XMLHttpRequest ile progress eventi kullanarak)
+  // İndirme Hızı Testi
   function testDownloadSpeed() {
     return new Promise((resolve, reject) => {
       const fileUrl = "https://speed.hetzner.de/10MB.bin"; // 10MB dosya
       const xhr = new XMLHttpRequest();
       let startTime, endTime;
       xhr.responseType = "blob";
-      xhr.onreadystatechange = function() {
-        if (xhr.readyState === 2) {
-          startTime = new Date().getTime();
-        }
+      xhr.onloadstart = function() {
+        startTime = new Date().getTime();
       };
       xhr.onprogress = function(event) {
         if(event.lengthComputable) {
-          let percentComplete = (event.loaded / event.total) * 100;
+          const percentComplete = (event.loaded / event.total) * 100;
           downloadBar.style.width = percentComplete + "%";
-          let currentTime = new Date().getTime();
-          let duration = (currentTime - startTime) / 1000;
-          let bitsLoaded = event.loaded * 8;
-          let speedMbps = (bitsLoaded / duration) / (1024 * 1024);
+          const currentTime = new Date().getTime();
+          const duration = (currentTime - startTime) / 1000;
+          const bitsLoaded = event.loaded * 8;
+          const speedMbps = (bitsLoaded / duration) / (1024 * 1024);
           downloadSpeedElem.textContent = speedMbps.toFixed(2);
         }
       };
       xhr.onload = function() {
-        if (xhr.status === 200) {
+        if(xhr.status === 200) {
           endTime = new Date().getTime();
-          let duration = (endTime - startTime) / 1000;
-          let fileSize = xhr.response.size; // byte cinsinden
-          let bitsLoaded = fileSize * 8;
-          let speedMbps = (bitsLoaded / duration) / (1024 * 1024);
+          const duration = (endTime - startTime) / 1000;
+          const fileSize = xhr.response.size; // byte cinsinden
+          const bitsLoaded = fileSize * 8;
+          const speedMbps = (bitsLoaded / duration) / (1024 * 1024);
           resolve(speedMbps);
         } else {
           reject("İndirme testi başarısız.");
@@ -160,7 +157,7 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
-  // Yükleme Hızı Testi (XMLHttpRequest ile progress eventi kullanarak)
+  // Yükleme Hızı Testi
   function testUploadSpeed() {
     return new Promise((resolve, reject) => {
       const url = "https://postman-echo.com/post";
@@ -169,22 +166,22 @@ document.addEventListener("DOMContentLoaded", () => {
       const xhr = new XMLHttpRequest();
       let startTime, endTime;
       xhr.upload.onprogress = function(event) {
-        if (event.lengthComputable) {
-          let percentComplete = (event.loaded / event.total) * 100;
+        if(event.lengthComputable) {
+          const percentComplete = (event.loaded / event.total) * 100;
           uploadBar.style.width = percentComplete + "%";
-          let currentTime = new Date().getTime();
-          let duration = (currentTime - startTime) / 1000;
-          let bitsUploaded = event.loaded * 8;
-          let speedMbps = (bitsUploaded / duration) / (1024 * 1024);
+          const currentTime = new Date().getTime();
+          const duration = (currentTime - startTime) / 1000;
+          const bitsUploaded = event.loaded * 8;
+          const speedMbps = (bitsUploaded / duration) / (1024 * 1024);
           uploadSpeedElem.textContent = speedMbps.toFixed(2);
         }
       };
       xhr.onload = function() {
-        if (xhr.status === 200) {
+        if(xhr.status === 200) {
           endTime = new Date().getTime();
-          let duration = (endTime - startTime) / 1000;
-          let bitsUploaded = sizeInBytes * 8;
-          let speedMbps = (bitsUploaded / duration) / (1024 * 1024);
+          const duration = (endTime - startTime) / 1000;
+          const bitsUploaded = sizeInBytes * 8;
+          const speedMbps = (bitsUploaded / duration) / (1024 * 1024);
           resolve(speedMbps);
         } else {
           reject("Yükleme testi başarısız.");
@@ -199,27 +196,26 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
-  // Ping, Jitter ve Paket Kaybı Testi (fetch ile birden fazla istek göndererek)
+  // Ping, Jitter ve Paket Kaybı Testi (fetch ile)
   async function testPing() {
     const pingUrl = "https://postman-echo.com/get?cache=" + Math.random();
     const pingCount = 5;
     let pingTimes = [];
     let failCount = 0;
-    for (let i = 0; i < pingCount; i++) {
+    for(let i = 0; i < pingCount; i++){
       try {
-        let start = new Date().getTime();
+        const start = new Date().getTime();
         await fetch(pingUrl, { cache: "no-cache" });
-        let end = new Date().getTime();
-        let pingTime = end - start;
+        const end = new Date().getTime();
+        const pingTime = end - start;
         pingTimes.push(pingTime);
-        pingElem.textContent = pingTime;
       } catch (error) {
         failCount++;
       }
     }
-    let avgPing = pingTimes.reduce((a, b) => a + b, 0) / pingTimes.length;
-    let jitter = pingTimes.reduce((a, b) => a + Math.abs(b - avgPing), 0) / pingTimes.length;
-    let packetLoss = (failCount / pingCount) * 100;
+    const avgPing = pingTimes.reduce((a, b) => a + b, 0) / pingTimes.length;
+    const jitter = pingTimes.reduce((a, b) => a + Math.abs(b - avgPing), 0) / pingTimes.length;
+    const packetLoss = (failCount / pingCount) * 100;
     return { avg: avgPing, jitter: jitter, packetLoss: packetLoss };
   }
 
@@ -238,7 +234,7 @@ document.addEventListener("DOMContentLoaded", () => {
     packetLossElem.textContent = packetLoss.toFixed(2);
   }
 
-  // Chart.js ile hız grafik oluşturma
+  // Chart.js ile grafik oluşturma
   function createChart(download, upload) {
     const ctx = document.getElementById("speedChart").getContext("2d");
     speedChart = new Chart(ctx, {
@@ -258,7 +254,7 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
-  // Sonuçları gösterme ve renk kodlaması, öneri belirleme
+  // Sonuç ekranı güncelleme, renk kodlaması ve öneri
   function showResults() {
     finalDownloadElem.textContent = results.download.toFixed(2) + " Mbps";
     finalUploadElem.textContent = results.upload.toFixed(2) + " Mbps";
@@ -279,7 +275,6 @@ document.addEventListener("DOMContentLoaded", () => {
     } else {
       recommendationText.textContent = "Düşük hız. İnternet sağlayıcınızla iletişime geçin.";
     }
-
     showSection(resultSection);
   }
 
